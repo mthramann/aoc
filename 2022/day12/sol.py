@@ -15,12 +15,12 @@ for line in f.readlines():
 
 deltas = [(0, 1), (0, -1), (-1, 0), (1, 0)]
 visited = set()
-
 q = Queue()
+
 q.put((end, 0))
 visited.add(end)
 
-while not q.empty():
+while q:
     (y, x), d = q.get()
     if grid[y][x] == "a":
         print(f"Found one in dist: {d}")
