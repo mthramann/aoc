@@ -19,25 +19,21 @@ def parse_list(s, ind = 1):
     return ans, ind
 
 def less_than(p1, p2):
-    for i, el in enumerate(p1):
-        if i >= len(p2):
-            return 1
-        if isinstance(el, int) and isinstance(p2[i], int):
-            if el < p2[i]:
+    for l, r in zip(p1, p2):
+        if isinstance(l, int) and isinstance(r, int):
+            if l < r:
                 return -1
-            elif el > p2[i]:
+            elif l > r:
                 return 1
         else:
-            l = el
-            r = p2[i]
             if isinstance(l, int):
                 l = [l]
             if isinstance(r, int):
                 r = [r]
             if res := less_than(l, r):
                 return res
-    return -1 if len(p1) < len(p2) else 0
-
+    
+    return -1 if len(p1) < len(p2) else (1 if len(p1) > len(p2) else 0)
 
 f = open("input.txt", "r")
 packets = []
@@ -55,10 +51,12 @@ for ind, (p1, p2) in enumerate(packets):
 print(f"Part 1: {correct}")
 
 packets = [p for t in packets for p in t]
-packets.append([[2]])
-packets.append([[6]])
+decoders = [[[2]], [[6]]]
+for decoder in decoders:
+    packets.append(decoder)
 
 packets = sorted(packets, key=cmp_to_key(less_than))
-d2 = packets.index([[2]]) + 1
-d6 = packets.index([[6]]) + 1
-print(f"Part 2: {d2 * d6}")
+prod = 1
+for decoder in decoders:
+    prod *= packets.index(decoder) + 1
+print(f"Part 2: {prod}")
