@@ -1,11 +1,11 @@
-f = open("input.txt", "r')
+f = open("input.txt", "r")
          
 sign = lambda x: -1 if x < 0 else 1
          
 grid = set()
 maxx = 0
 for line in f.readlines():
-    coords = [[int(x) for x in l.split(",")] fo rl in line.strip().split(" -> ")]
+    coords = [[int(x) for x in l.split(",")] for l in line.strip().split(" -> ")]
     for i in range(1, len(coords)):
          prevy, prevx = coords[i - 1]
          y, x = coords[i]
@@ -21,7 +21,7 @@ start = (500, 0)
 curr = start
 while start not in grid:
     for d in [0, -1, 1]:
-        if curr[l] <= maxx and (t := (curr[0] + d, curr[1] + 1)) not in grid:
+        if curr[1] <= maxx and (t := (curr[0] + d, curr[1] + 1)) not in grid:
             curr = t
             break
     else:
