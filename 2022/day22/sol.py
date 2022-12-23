@@ -1,36 +1,22 @@
-def print_grid(g):
-    for row in g:
-        print("".join(row))
-
+# Stitch the remaining 7 cube edges together.
 wrapping = {}
-# 1
 for i in range(0, 50):
     wrapping[(i, 49, 2)] = (149 - i, 0, 0)
     wrapping[(149 - i, -1, 2)] = (i, 50, 0)
-# 2
+    wrapping[(i, 150, 0)] = (149 - i, 99, 2)
+    wrapping[(149 - i, 100, 0)] = (i, 149, 2)
 for i in range(50, 100):
     wrapping[(-1, i, 3)] = (100 + i, 0, 0)
     wrapping[(100 + i, -1, 2)] = (0, i, 1)
-# 3
-for i in range(50, 100):
     wrapping[(i, 49, 2)] = (100, i - 50, 1)
     wrapping[(99, i - 50, 3)] = (i, 50, 0)
-# 4
+    wrapping[(150, i, 1)] = (100 + i, 49, 2)
+    wrapping[(100 + i, 50, 0)] = (149, i, 3)
 for i in range(100, 150):
     wrapping[(-1, i, 3)] = (199, i - 100, 3)
     wrapping[(200, i - 100, 1)] = (0, i, 1)
-# 5
-for i in range(0, 50):
-    wrapping[(i, 150, 0)] = (149 - i, 99, 2)
-    wrapping[(149 - i, 100, 0)] = (i, 149, 2)
-# 6
-for i in range(100, 150):
     wrapping[(50, i, 1)] = (i - 50, 99, 2)
     wrapping[(i - 50, 100, 0)] = (49, i, 3)
-# 7
-for i in range(50, 100):
-    wrapping[(150, i, 1)] = (100 + i, 49, 2)
-    wrapping[(100 + i, 50, 0)] = (149, i, 3)
 
 import re
 f = open("input.txt", "r")
@@ -43,22 +29,7 @@ for line in f.readlines():
         grid.append(list(line)[:-1])
 
 directions = [int(x) if x.isdigit() else x for x in directions]
-maxl = max([len(r) for r in grid])
-for r in grid:
-    r.extend([' '] * (maxl - len(r)))
-
 deltas = {0: (0, 1), 1: (1, 0), 2: (0, -1), 3: (-1, 0)}
-
-def wrap(nr, nc):
-    if nr < 0:
-        nr = len(grid) - 1
-    if nr >= len(grid):
-        nr = 0
-    if nc < 0:
-        nc = len(grid[nr]) - 1
-    if nc >= len(grid[nr]):
-        nc = 0
-    return (nr, nc)
 
 facing = 0
 row = 0
@@ -74,21 +45,20 @@ for d in directions:
             facing += 3
         facing %= 4
         continue
-    dr, dc = deltas[facing]
     for _ in range(d):
+        dr, dc = deltas[facing]
         nr = row + dr
         nc = col + dc
+        nf = facing
         if (t := (nr, nc, facing)) in wrapping:
-            nr, nc, facing = wrapping[t]
-            dr, dc = deltas[facing]
+            nr, nc, nf = wrapping[t]
 
-        #print(f"{nr=}, {nc=}")
         if grid[nr][nc] == '#':
             break
-        
+
+        facing = nf
         row = nr
         col = nc
-print(f"{facing=}, {row=}, {col=}")
 print(1000 * (row + 1) + 4 * (col + 1) + facing)
 
 
